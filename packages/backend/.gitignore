@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Built files
+dist/
+build/
+
+# Local env
+.env
+.env.*
+
+# Logs
+*.log
+
+# Editor
+.DS_Store
+.vscode/
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
