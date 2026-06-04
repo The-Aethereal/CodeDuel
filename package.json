@@ -1,0 +1,15 @@
+{
+  "name": "contest-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w packages/backend",
+    "dev:worker": "npm run dev -w packages/judge-worker",
+    "dev:frontend": "npm run dev -w packages/frontend",
+    "db:generate": "npm run db:generate -w @codeduel/database",
+    "db:push": "npm run db:push -w @codeduel/database"
+  }
+}

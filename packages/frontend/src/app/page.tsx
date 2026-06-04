@@ -15,7 +15,7 @@ export default function LandingPage() {
               Compete. Code. Conquer.
             </p>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white text-balance">
-              Learn faster, compete smarter, and ship algorithmic solutions.
+              Learn faster and compete smarter
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-slate-300 max-w-2xl">
               Solve curated problems, enter real-time duels, and track your growth with rich submission analytics.
