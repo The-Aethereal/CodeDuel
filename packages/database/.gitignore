@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Local env
+.env
+.env.*
+
+# Prisma client
+.prisma/
+
+# Editor
+.DS_Store
+.vscode/

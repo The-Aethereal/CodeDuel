@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  participant
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+enum SubmissionStatus {
+  pending
+  queued
+  running
+  accepted
+  wrong_answer
+  time_limit_exceeded
+  memory_limit_exceeded
+  runtime_error
+  compile_error
+  system_error
+}
+
+enum Language {
+  cpp
+  python
+  java
+  javascript
+  go
+  rust
+}
+
+enum DuelStatus {
+  WAITING
+  ONGOING
+  FINISHED
+}
+
+model User {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email          String    @unique @db.VarChar(255)
+  username       String    @unique @db.VarChar(50)
+  password_hash  String
+  role           Role      @default(participant)
+  avatar_url     String?
+  created_at     DateTime  @default(now()) @db.Timestamptz
+  updated_at     DateTime  @default(now()) @updatedAt @db.Timestamptz
+
+  refresh_tokens RefreshToken[]
+  problems       Problem[]
+  submissions    Submission[]
+  activity_logs ActivityLog[]
+  created_duels     DuelRoom[]        @relation("CreatedDuels")
+  duel_activities   DuelParticipant[]
+  duel_elo              Int            @default(1200) // Standard starting ELO
+  problems_solved_count Int            @default(0)
+  match_histories       MatchHistory[]
+}
+
+model RefreshToken {
+  id          String   @id @db.Uuid
+  user_id     String   @db.Uuid
+  token_hash  String
+  expires_at  DateTime @db.Timestamptz
+  revoked     Boolean  @default(false)
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Problem {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug            String     @unique @db.VarChar(100)
+  title           String     @db.VarChar(255)
+  description     String
+  input_format    String?
+  output_format   String?
+  constraints     String?
+  difficulty      Difficulty
+  time_limit_ms   Int        @default(2000)
+  memory_limit_mb Int        @default(256)
+  is_published    Boolean    @default(false)
+  created_by      String?    @db.Uuid
+  created_at      DateTime   @default(now()) @db.Timestamptz
+  updated_at      DateTime   @default(now()) @updatedAt @db.Timestamptz
+
+  author      User?        @relation(fields: [created_by], references: [id], onDelete: SetNull)
+  submissions Submission[]
+  test_cases TestCase[]
+  activity_logs ActivityLog[]
+  duels           DuelRoom[]
+  tags Tag[]
+}
+
+model Submission {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String?          @db.Uuid
+  problem_id      String           @db.Uuid
+  language        Language
+  source_code     String
+  status          SubmissionStatus @default(pending)
+  score           Int              @default(0)
+  exec_time_ms    Int?
+  memory_used_mb  Float?
+  judge_output    String?
+  submitted_at    DateTime         @default(now()) @db.Timestamptz
+  judged_at       DateTime?        @db.Timestamptz
+
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  problem Problem @relation(fields: [problem_id], references: [id], onDelete: Cascade)
+  test_results SubmissionTestResult[]
+  room_id     String?   @db.Uuid
+  room        DuelRoom? @relation(fields: [room_id], references: [id], onDelete: SetNull)
+}
+model TestCase {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  problem_id      String   @db.Uuid
+  input_data      String   // DB TEXT by default in Prisma for string
+  expected_output String
+  is_sample       Boolean  @default(false)
+  order_index     Int      @default(0)
+  created_at      DateTime @default(now()) @db.Timestamptz
+
+  problem Problem @relation(fields: [problem_id], references: [id], onDelete: Cascade)
+
+  @@map("test_cases") // Maps to the table name in your architecture state
+  test_results SubmissionTestResult[]
+}
+model SubmissionTestResult {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  submission_id   String   @db.Uuid
+  test_case_id    String   @db.Uuid
+  status          SubmissionStatus
+  exec_time_ms    Int?
+  memory_used_mb  Float?
+  actual_output   String?
+  order_index     Int      @default(0)
+
+  submission Submission @relation(fields: [submission_id], references: [id], onDelete: Cascade)
+  test_case  TestCase   @relation(fields: [test_case_id], references: [id], onDelete: Cascade)
+
+  @@map("submission_test_results")
+}
+
+model ActivityLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String   @db.Uuid
+  problem_id  String?  @db.Uuid
+  event_type  String
+  event_date  DateTime @default(now())
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  problem     Problem? @relation(fields: [problem_id], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
+}
+
+model DuelRoom {
+  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code          String            @unique
+  difficulty    String
+  duration_mins Int
+  status        DuelStatus        @default(WAITING)
+  problem_id    String?           @db.Uuid
+  creator_id    String            @db.Uuid
+  created_at    DateTime          @default(now())
+  started_at    DateTime?
+  ended_at      DateTime?
+
+  creator       User              @relation("CreatedDuels", fields: [creator_id], references: [id], onDelete: Cascade)
+  problem       Problem?          @relation(fields: [problem_id], references: [id], onDelete: SetNull)
+  participants  DuelParticipant[]
+  winner_id     String?   @db.Uuid
+  match_histories MatchHistory[]   // ← add this
+  submissions Submission[]
+  
+  @@map("duel_rooms")
+}
+
+model DuelParticipant {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  room_id   String   @db.Uuid
+  user_id   String   @db.Uuid
+  joined_at DateTime @default(now())
+
+  room      DuelRoom @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([room_id, user_id])
+  @@map("duel_participants")
+}
+model Tag {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @unique
+  problems  Problem[]
+
+  @@map("tags")
+}
+model MatchHistory {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String   @db.Uuid
+  opponent_id String?  @db.Uuid
+  room_id     String   @db.Uuid
+  result      String   // "win", "loss", "tie"
+  elo_change  Int      // e.g., +14, -12
+  new_elo     Int      // The user's new ELO after this match
+  created_at  DateTime @default(now())
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  room        DuelRoom @relation(fields: [room_id], references: [id], onDelete: Cascade)
+
+  @@map("match_histories")
+}

@@ -91,6 +91,31 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
       }
     });
 
+    if (uid && problems.length > 0) {
+      const problemIds = problems.map((p) => p.id);
+      const userSubs = await prisma.submission.findMany({
+        where: { user_id: uid, problem_id: { in: problemIds } },
+        select: { problem_id: true, status: true },
+      });
+
+      const statusMap = new Map<string, 'solved' | 'attempted'>();
+      for (const sub of userSubs) {
+        if (sub.status === 'accepted') {
+          statusMap.set(sub.problem_id, 'solved');
+        } else if (statusMap.get(sub.problem_id) !== 'solved') {
+          statusMap.set(sub.problem_id, 'attempted');
+        }
+      }
+
+      const enriched = problems.map((p) => ({
+        ...p,
+        userStatus: statusMap.get(p.id) || 'unsolved',
+      }));
+
+      res.status(200).json(enriched);
+      return;
+    }
+
     res.status(200).json(problems);
   } catch (error) {
     console.error('Get Problems Error:', error);
