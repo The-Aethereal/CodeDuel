@@ -166,7 +166,6 @@ flowchart LR
 
 ## Screenshots
 
-﻿<div align="center">
 
 ### Landing & Problem Discovery
 <img width="2848" height="1620" alt="{7B75566F-2735-43BA-93E2-45E9018276A6}" src="https://github.com/user-attachments/assets/5510ec4d-05aa-4994-a63d-38f9262b0759" />
