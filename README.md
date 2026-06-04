@@ -1,4 +1,5 @@
 
+
 # CodeDuel
 
 ### A competitive programming platform with real-time 1v1 duels, async code judging, and live verdict streaming.
@@ -168,28 +169,31 @@ flowchart LR
 ﻿<div align="center">
 
 ### Landing & Problem Discovery
-<img width="2842" height="1619" alt="{84E57222-025B-4446-BD26-0A89F281E5E3}" src="https://github.com/user-attachments/assets/33372f79-1989-44c7-b865-a962f302f76d" />
 <img width="2848" height="1620" alt="{7B75566F-2735-43BA-93E2-45E9018276A6}" src="https://github.com/user-attachments/assets/5510ec4d-05aa-4994-a63d-38f9262b0759" />
+
+<img width="2842" height="1619" alt="{84E57222-025B-4446-BD26-0A89F281E5E3}" src="https://github.com/user-attachments/assets/33372f79-1989-44c7-b865-a962f302f76d" />
 
 
 ### Problem Solve Interface
 
-<img width="2837" height="1620" alt="{CFABB91A-AB49-4692-8AF5-4FF433379DFA}" src="https://github.com/user-attachments/assets/9816322b-9132-40d3-b3cb-60cb984c7a27" />
+<img width="2843" height="1620" alt="{DD229689-4920-432E-9576-AE878E65BF0F}" src="https://github.com/user-attachments/assets/cdb4da31-5eaa-43fb-9cd7-facf14a8f314" />
+
 
 ### Duel Lobby
 
-<img width="2880" height="1618" alt="{50825216-465B-4912-AD3C-C97A794D3269}" src="https://github.com/user-attachments/assets/1c0207b7-21a9-45a2-b992-ef0787d29940" />
-
 <img width="2844" height="1612" alt="{2057B5FC-70F9-48A1-92B0-C33F9DFEF3F4}" src="https://github.com/user-attachments/assets/eddf3d36-0d0d-43ff-806e-f20f8ed0256e" />
+
+<img width="2880" height="1618" alt="{50825216-465B-4912-AD3C-C97A794D3269}" src="https://github.com/user-attachments/assets/1c0207b7-21a9-45a2-b992-ef0787d29940" />
 
 
 ### Profile
 
-<img width="2843" height="1620" alt="{DD229689-4920-432E-9576-AE878E65BF0F}" src="https://github.com/user-attachments/assets/cdb4da31-5eaa-43fb-9cd7-facf14a8f314" />
+<img width="2837" height="1620" alt="{CFABB91A-AB49-4692-8AF5-4FF433379DFA}" src="https://github.com/user-attachments/assets/9816322b-9132-40d3-b3cb-60cb984c7a27" />
 
 
 ### Admin Panel
-
+<img width="2835" height="1620" alt="{5821F780-9C17-47AF-8C70-064B0FA97CFE}" src="https://github.com/user-attachments/assets/8ad3aded-1fca-48a8-a40f-2e3725d1637b" />
+<img width="2821" height="1620" alt="{F3136F0C-613A-4CFF-91DF-DB2CE301621A}" src="https://github.com/user-attachments/assets/2ca86564-01ed-4bb4-8470-08c903c16adf" />
 
 
 ---
